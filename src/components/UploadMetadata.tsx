@@ -42,9 +42,6 @@ export const UploadMetadata: FC = ({}) => {
     }
   });
 
-  useEffect(() => {
-
-  });
 
   const initializeBundlr = async () => {
     // initialise a bundlr client

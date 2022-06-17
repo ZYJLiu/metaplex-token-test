@@ -1,27 +1,27 @@
-import { FC, useState, Fragment, useEffect } from 'react';
-import { Listbox, Transition } from '@headlessui/react'
-import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
-import { WebBundlr } from '@bundlr-network/client';
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { FC, useState, Fragment, useEffect } from "react";
+import { Listbox, Transition } from "@headlessui/react";
+import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
+import { WebBundlr } from "@bundlr-network/client";
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { useWallet } from "@solana/wallet-adapter-react";
 
-import { notify } from '../utils/notifications';
+import { notify } from "../utils/notifications";
 
 const bundlers = [
-  { id: 1, network: 'mainnet-beta', name: 'https://node1.bundlr.network' },
-  { id: 2, network: 'devnet', name: 'https://devnet.bundlr.network'},
-]
+  { id: 1, network: "mainnet-beta", name: "https://node1.bundlr.network" },
+  { id: 2, network: "devnet", name: "https://devnet.bundlr.network" },
+];
 
 const classNames = (...classes) => {
-  return classes.filter(Boolean).join(' ')
-}
+  return classes.filter(Boolean).join(" ");
+};
 
 export const UploadMetadata: FC = ({}) => {
   const wallet = useWallet();
   const [provider, setProvider] = useState(null);
   const [address, setAddress] = useState(null);
   const [bundlr, setBundlr] = useState(null);
-  const [selected, setSelected] = useState(null)
+  const [selected, setSelected] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
@@ -46,6 +46,9 @@ export const UploadMetadata: FC = ({}) => {
     if (selected != null) initializeBundlr();
   }, [selected]);
 
+  useEffect(() => {
+    uploadMetadata();
+  }, [imageUrl]);
 
   const initializeBundlr = async () => {
     // initialise a bundlr client
@@ -116,16 +119,16 @@ export const UploadMetadata: FC = ({}) => {
   };
 
   const uploadImage = async () => {
-    const price = await bundlr.utils.getPrice('solana', imageFile.length);
+    const price = await bundlr.utils.getPrice("solana", imageFile.length);
     let amount = bundlr.utils.unitConverter(price);
     amount = amount.toNumber();
 
-    console.log(amount)
+    console.log(amount);
 
     const loadedBalance = await bundlr.getLoadedBalance();
     let balance = bundlr.utils.unitConverter(loadedBalance.toNumber());
     balance = balance.toNumber();
-    console.log(balance)
+    console.log(balance);
 
     // if (balance < amount) {
     //   await bundlr.fund(LAMPORTS_PER_SOL);
@@ -133,12 +136,11 @@ export const UploadMetadata: FC = ({}) => {
 
     if (balance < amount) {
       // Fund your account with the difference
-      await bundlr.fund( (amount * LAMPORTS_PER_SOL));
+      await bundlr.fund(amount * LAMPORTS_PER_SOL);
     }
 
-
     const imageResult = await bundlr.uploader.upload(imageFile, [
-      { name: 'Content-Type', value: 'image/png' },
+      { name: "Content-Type", value: "image/png" },
     ]);
 
     const arweaveImageUrl = `https://arweave.net/${imageResult.data.id}?ext=png`;
@@ -149,7 +151,18 @@ export const UploadMetadata: FC = ({}) => {
   };
 
   const uploadMetadata = async () => {
-    const price = await bundlr.utils.getPrice('solana', metadata.length);
+    const data = {
+      name: null,
+      symbol: null,
+      description: null,
+      image: imageUrl,
+    };
+
+    // const jsonString = JSON.stringify(data);
+    const buffer = Buffer.from(JSON.stringify(data, null, 2));
+
+    // const price = await bundlr.utils.getPrice('solana', metadata.length);
+    const price = await bundlr.utils.getPrice("solana", buffer.length);
     let amount = bundlr.utils.unitConverter(price);
     amount = amount.toNumber();
     console.log(amount);
@@ -168,9 +181,8 @@ export const UploadMetadata: FC = ({}) => {
       await bundlr.fund(amount * LAMPORTS_PER_SOL);
     }
 
-
-    const metadataResult = await bundlr.uploader.upload(metadata, [
-      { name: 'Content-Type', value: 'application/json' },
+    const metadataResult = await bundlr.uploader.upload(buffer, [
+      { name: "Content-Type", value: "application/json" },
     ]);
     const arweaveMetadataUrl = `https://arweave.net/${metadataResult.data.id}`;
 
@@ -178,16 +190,15 @@ export const UploadMetadata: FC = ({}) => {
   };
 
   const test = async () => {
-    // await initializeBundlr();
-    uploadImage();
-  }
+    await uploadImage();
+    // await uploadMetadata();
+  };
 
   return (
-    <div className='bg-white shadow overflow-hidden sm:rounded-lg'>
-      <div className='border-t border-gray-200 px-4 py-5 sm:p-0'>
-        <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-
-          <div className='md:col-span-1'>
+    <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+      <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
+        <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          {/* <div className='md:col-span-1'>
             <div className='px-4 sm:px-0'>
               <h3 className='text-lg font-medium leading-6 text-gray-900'>
                 Bundler
@@ -197,18 +208,23 @@ export const UploadMetadata: FC = ({}) => {
                 to Arweave.
               </p>
             </div>
-          </div>
+          </div> */}
 
-          <div className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1'>
-            <div className='px-4 py-5 bg-white space-y-6 sm:p-6'>
+          <div className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+            <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
               <Listbox value={selected} onChange={setSelected}>
                 {() => (
                   <>
                     <div className="mt-1 relative">
                       <Listbox.Button className="bg-white relative w-full border border-gray-300 rounded-md shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        <span className="block truncate">{!selected ? 'Select Network' : selected.network}</span>
+                        <span className="block truncate">
+                          {!selected ? "Select Network" : selected.network}
+                        </span>
                         <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                          <SelectorIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                          <SelectorIcon
+                            className="h-5 w-5 text-gray-400"
+                            aria-hidden="true"
+                          />
                         </span>
                       </Listbox.Button>
 
@@ -224,26 +240,40 @@ export const UploadMetadata: FC = ({}) => {
                               key={bundler.id}
                               className={({ active }) =>
                                 classNames(
-                                  active ? 'text-white bg-purple-500' : 'text-gray-900',
-                                  'cursor-default select-none relative py-2 pl-3 pr-9'
+                                  active
+                                    ? "text-white bg-purple-500"
+                                    : "text-gray-900",
+                                  "cursor-default select-none relative py-2 pl-3 pr-9"
                                 )
                               }
                               value={bundler}
                             >
                               {({ selected, active }) => (
                                 <>
-                                  <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
+                                  <span
+                                    className={classNames(
+                                      selected
+                                        ? "font-semibold"
+                                        : "font-normal",
+                                      "block truncate"
+                                    )}
+                                  >
                                     {bundler.network}
                                   </span>
 
                                   {selected ? (
                                     <span
                                       className={classNames(
-                                        active ? 'text-white' : 'text-purple-500',
-                                        'absolute inset-y-0 right-0 flex items-center pr-4'
+                                        active
+                                          ? "text-white"
+                                          : "text-purple-500",
+                                        "absolute inset-y-0 right-0 flex items-center pr-4"
                                       )}
                                     >
-                                      <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                                      <CheckIcon
+                                        className="h-5 w-5"
+                                        aria-hidden="true"
+                                      />
                                     </span>
                                   ) : null}
                                 </>
@@ -268,17 +298,16 @@ export const UploadMetadata: FC = ({}) => {
               </button>
             </div>
           </div> */}
-
         </div>
-        
-        <div className='hidden sm:block' aria-hidden='true'>
-          <div className='py-5'>
-            <div className='border-t border-gray-200' />
+
+        <div className="hidden sm:block" aria-hidden="true">
+          <div className="py-5">
+            <div className="border-t border-gray-200" />
           </div>
         </div>
 
-        <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-          <div className='md:col-span-1'>
+        <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          {/* <div className='md:col-span-1'>
             <div className='px-4 sm:px-0'>
               <h3 className='text-lg font-medium leading-6 text-gray-900'>
                 Image URL
@@ -290,78 +319,80 @@ export const UploadMetadata: FC = ({}) => {
                 metadata file.
               </p>
             </div>
-          </div>
+          </div> */}
 
-          <div className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1'>
+          <div className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
             {!imageUrl ? (
-              <div className='mt-1 sm:mt-0 sm:col-span-1'>
-                <div className='max-w-lg flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md'>
-                  <div className='space-y-1 text-center'>
+              <div className="mt-1 sm:mt-0 sm:col-span-1">
+                <div className="max-w-lg flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                  <div className="space-y-1 text-center">
                     <svg
-                      className='mx-auto h-12 w-12 text-gray-400'
-                      stroke='currentColor'
-                      fill='none'
-                      viewBox='0 0 48 48'
-                      aria-hidden='true'>
+                      className="mx-auto h-12 w-12 text-gray-400"
+                      stroke="currentColor"
+                      fill="none"
+                      viewBox="0 0 48 48"
+                      aria-hidden="true"
+                    >
                       <path
-                        d='M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02'
+                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
                         strokeWidth={2}
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
-                    <div className='flex text-sm text-gray-600'>
+                    <div className="flex text-sm text-gray-600">
                       <label
-                        htmlFor='image-upload'
-                        className='relative cursor-pointer bg-white rounded-md font-medium text-purple-500 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500'>
+                        htmlFor="image-upload"
+                        className="relative cursor-pointer bg-white rounded-md font-medium text-purple-500 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
+                      >
                         <span>Upload an image</span>
                         <input
-                          id='image-upload'
-                          name='image-upload'
-                          type='file'
-                          className='sr-only'
+                          id="image-upload"
+                          name="image-upload"
+                          type="file"
+                          className="sr-only"
                           onChange={handleImageChange}
                         />
                       </label>
                       {/* <p className='pl-1'>or drag and drop</p> */}
                     </div>
                     {!selectedImage ? null : (
-                      <p className='text-sm text-gray-500'>{selectedImage}</p>
+                      <p className="text-sm text-gray-500">{selectedImage}</p>
                     )}
                   </div>
                 </div>
               </div>
             ) : (
-              <div className='px-4 py-5 bg-white space-y-6 sm:p-6'>
-                <a href={imageUrl} target='_blank' rel='noreferrer'>
+              <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+                <a href={imageUrl} target="_blank" rel="noreferrer">
                   {imageUrl}
                 </a>
               </div>
             )}
           </div>
 
-          <div className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1'>
-            <div className='px-4 py-5 bg-white space-y-6 sm:p-6'>
+          <div className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+            <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
               {!imageUrl && (
                 <button
-                  className='px-8 m-2 btn animate-pulse bg-gradient-to-r from-[#9945FF] to-[#14F195] hover:from-pink-500 hover:to-yellow-500 ...'
-                  onClick={async () => test()}>
+                  className="px-8 m-2 btn animate-pulse bg-gradient-to-r from-[#9945FF] to-[#14F195] hover:from-pink-500 hover:to-yellow-500 ..."
+                  onClick={async () => test()}
+                >
                   Upload Image
                 </button>
               )}
             </div>
           </div>
-
         </div>
 
-        <div className='hidden sm:block' aria-hidden='true'>
-          <div className='py-5'>
-            <div className='border-t border-gray-200' />
+        <div className="hidden sm:block" aria-hidden="true">
+          <div className="py-5">
+            <div className="border-t border-gray-200" />
           </div>
         </div>
-        
-        <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-          <div className='md:col-span-1'>
+
+        <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          {/* <div className='md:col-span-1'>
             <div className='px-4 sm:px-0'>
               <h3 className='text-lg font-medium leading-6 text-gray-900'>
                 Metadata URL
@@ -371,12 +402,14 @@ export const UploadMetadata: FC = ({}) => {
                 to create your token.
               </p>
             </div>
-          </div>
-          <div className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1'>
+          </div> */}
+
+          <div className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
             {!metadataUrl ? (
-              <div className='mt-1 sm:mt-0 sm:col-span-1'>
-                <div className='max-w-lg flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md'>
+              <div className="mt-1 sm:mt-0 sm:col-span-1">
+                {/* <div className='max-w-lg flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md'>
                   <div className='space-y-1 text-center'>
+
                     <svg
                       className='mx-auto h-12 w-12 text-gray-400'
                       stroke='currentColor'
@@ -390,6 +423,7 @@ export const UploadMetadata: FC = ({}) => {
                         strokeLinejoin='round'
                       />
                     </svg>
+                    
                     <div className='flex text-sm text-gray-600'>
                       <label
                         htmlFor='file-upload'
@@ -403,29 +437,33 @@ export const UploadMetadata: FC = ({}) => {
                           onChange={handleMetadataChange}
                         />
                       </label>
-                      {/* <p className='pl-1'>or drag and drop</p> */}
+                      <p className='pl-1'>or drag and drop</p>
                     </div>
+
                     {!selectedFile ? null : (
                       <p className='text-sm text-gray-500'>{selectedFile}</p>
                     )}
+
                   </div>
-                </div>
+                </div> */}
               </div>
             ) : (
-              <div className='px-4 py-5 bg-white space-y-6 sm:p-6'>
-                <a href={metadataUrl} target='_blank' rel='noreferrer'>
+              <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+                <a href={metadataUrl} target="_blank" rel="noreferrer">
                   {metadataUrl}
                 </a>
               </div>
             )}
           </div>
-          <div className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1'>
-            <div className='px-4 py-5 bg-white space-y-6 sm:p-6'>
+
+          <div className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+            <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
               {!metadataUrl && (
                 <button
-                  className='items-center px-3 py-2 text-xs btn animate-pulse bg-gradient-to-r from-[#9945FF] to-[#14F195] hover:from-pink-500 hover:to-yellow-500 ...'
+                  className="items-center px-3 py-2 text-xs btn animate-pulse bg-gradient-to-r from-[#9945FF] to-[#14F195] hover:from-pink-500 hover:to-yellow-500 ..."
                   onClick={async () => uploadMetadata()}
-                  disabled={!bundlr}>
+                  disabled={!bundlr}
+                >
                   Upload Metadata
                 </button>
               )}
