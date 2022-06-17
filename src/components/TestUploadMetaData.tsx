@@ -1,4 +1,4 @@
-import { FC, useState, Fragment, useEffect } from "react";
+import { FC, useState, Fragment, useEffect, useRef } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 import { WebBundlr } from "@bundlr-network/client";
@@ -29,6 +29,9 @@ export const UploadMetadata: FC = ({}) => {
   const [metadata, setMetadata] = useState(null);
   const [metadataUrl, setMetadataUrl] = useState(null);
 
+  const imageMounted = useRef(false);
+  const selectedMounted = useRef(false);
+
   useEffect(() => {
     if (wallet && wallet.connected) {
       async function connectProvider() {
@@ -43,11 +46,20 @@ export const UploadMetadata: FC = ({}) => {
   }, [wallet]);
 
   useEffect(() => {
-    if (selected != null) initializeBundlr();
+    if (selectedMounted.current && selected != null && wallet.connected) {
+      initializeBundlr();
+    } else {
+      selectedMounted.current = true;
+    }
+    // if (selected != null) initializeBundlr();
   }, [selected]);
 
   useEffect(() => {
-    uploadMetadata();
+    if (imageMounted.current) {
+      uploadMetadata();
+    } else {
+      imageMounted.current = true;
+    }
   }, [imageUrl]);
 
   const initializeBundlr = async () => {
@@ -67,20 +79,20 @@ export const UploadMetadata: FC = ({}) => {
       // Check for valid bundlr node
       await bundler.utils.getBundlerAddress("solana");
     } catch (err) {
-      // notify({ type: 'error', message: `${err}` });
-      // return;
+      notify({ type: "error", message: `${err}` });
+      return;
     }
     try {
       await bundler.ready();
     } catch (err) {
-      // notify({ type: 'error', message: `${err}` });
-      // return;
+      notify({ type: "error", message: `${err}` });
+      return;
     } //@ts-ignore
     if (!bundler.address) {
-      // notify({
-      //   type: 'error',
-      //   message: 'Unexpected error: bundlr address not found',
-      // });
+      notify({
+        type: "error",
+        message: "Unexpected error: bundlr address not found",
+      });
     }
     notify({
       type: "success",
@@ -456,7 +468,7 @@ export const UploadMetadata: FC = ({}) => {
             )}
           </div>
 
-          <div className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
+          {/* <div className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1">
             <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
               {!metadataUrl && (
                 <button
@@ -468,7 +480,7 @@ export const UploadMetadata: FC = ({}) => {
                 </button>
               )}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
