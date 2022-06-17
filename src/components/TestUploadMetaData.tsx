@@ -40,33 +40,29 @@ export const UploadMetadata: FC = ({}) => {
       }
       connectProvider();
     }
-    initializeBundlr();
   }, [wallet]);
 
   useEffect(() => {
-    // if (provider) {
-    //   async function bundlr() {
-    //   }
-    //   bundlr();
-    // }
-    initializeBundlr();
-  }, [provider]);
+    if (selected != null) initializeBundlr();
+  }, [selected]);
 
 
   const initializeBundlr = async () => {
     // initialise a bundlr client
-    let bundler = new WebBundlr(
-      "https://devnet.bundlr.network",
-      "solana",
-      provider,
-      { providerUrl: "https://api.devnet.solana.com" }
-    );
+    let bundler;
+    if (selected.name === "https://devnet.bundlr.network") {
+      bundler = new WebBundlr(`${selected.name}`, "solana", provider, {
+        providerUrl: "https://api.devnet.solana.com",
+      });
+    } else {
+      bundler = new WebBundlr(`${selected.name}`, "solana", provider);
+    }
 
-    console.log(bundler)
+    console.log(bundler);
 
     try {
       // Check for valid bundlr node
-      await bundler.utils.getBundlerAddress('solana');
+      await bundler.utils.getBundlerAddress("solana");
     } catch (err) {
       // notify({ type: 'error', message: `${err}` });
       // return;
@@ -83,10 +79,10 @@ export const UploadMetadata: FC = ({}) => {
       //   message: 'Unexpected error: bundlr address not found',
       // });
     }
-    // notify({
-    //   type: 'success',
-    //   message: `Connected to Devnet`,
-    // });
+    notify({
+      type: "success",
+      message: `Connected to ${selected.network}`,
+    });
     setAddress(bundler?.address);
     setBundlr(bundler);
   };
@@ -189,7 +185,7 @@ export const UploadMetadata: FC = ({}) => {
   return (
     <div className='bg-white shadow overflow-hidden sm:rounded-lg'>
       <div className='border-t border-gray-200 px-4 py-5 sm:p-0'>
-        {/* <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+        <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
 
           <div className='md:col-span-1'>
             <div className='px-4 sm:px-0'>
@@ -263,7 +259,7 @@ export const UploadMetadata: FC = ({}) => {
             </div>
           </div>
 
-          <div className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1'>
+          {/* <div className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1'>
             <div className='px-4 py-5 bg-white space-y-6 sm:p-6'>
               <button
                 className='items-center px-3 py-2 text-xs btn animate-pulse bg-gradient-to-r from-[#9945FF] to-[#14F195] hover:from-pink-500 hover:to-yellow-500 ...'
@@ -271,15 +267,15 @@ export const UploadMetadata: FC = ({}) => {
                 Connect
               </button>
             </div>
-          </div>
+          </div> */}
 
-        </div> */}
-{/*         
+        </div>
+        
         <div className='hidden sm:block' aria-hidden='true'>
           <div className='py-5'>
             <div className='border-t border-gray-200' />
           </div>
-        </div> */}
+        </div>
 
         <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
           <div className='md:col-span-1'>
