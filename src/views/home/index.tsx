@@ -14,7 +14,8 @@ import pkg from "../../../package.json";
 import useUserSOLBalanceStore from "../../stores/useUserSOLBalanceStore";
 // import { CreateToken } from 'components/CreateToken';
 import { CreateToken } from "components/TestCreateToken";
-import { UploadMetadata } from "components/TestUploadMetaData";
+// import { UploadMetadata } from "components/TestUploadMetaData";
+import { UploadMetadata } from "components/TestCreateForm";
 
 export const HomeView: FC = ({}) => {
   const [metadataUrlIndexPage, setMetadataUrlIndexPage] = useState(null);
@@ -43,10 +44,11 @@ export const HomeView: FC = ({}) => {
         <div className="text-center">
           {/* <RequestAirdrop my-2 /> */}
           {wallet && <p>SOL Balance: {(balance || 0).toLocaleString()}</p>}
-          <UploadMetadata
+          <UploadMetadata />
+          {/* <UploadMetadata
             setMetadataUrlIndexPage={(URL) => setMetadataUrlIndexPage(URL)}
-          />
-          <CreateToken metadataUrlIndexPage={metadataUrlIndexPage} />
+          /> */}
+          {/* <CreateToken metadataUrlIndexPage={metadataUrlIndexPage} /> */}
         </div>
       </div>
     </div>
