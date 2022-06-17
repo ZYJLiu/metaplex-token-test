@@ -40,29 +40,27 @@ export const UploadMetadata: FC = ({}) => {
       }
       connectProvider();
     }
-  });
+    initializeBundlr();
+  }, [wallet]);
 
   useEffect(() => {
+    // if (provider) {
+    //   async function bundlr() {
+    //   }
+    //   bundlr();
+    // }
+    initializeBundlr();
+  }, [provider]);
 
-  });
 
   const initializeBundlr = async () => {
     // initialise a bundlr client
-    let bundler;
-    if (selected.name === 'https://devnet.bundlr.network') {
-      bundler = new WebBundlr(
-        `${selected.name}`,
-        'solana',
-        provider,
-        { providerUrl: 'https://api.devnet.solana.com' }
-      );
-    } else {
-       bundler = new WebBundlr(
-        `${selected.name}`,
-        'solana',
-        provider
-      );
-    }
+    let bundler = new WebBundlr(
+      "https://devnet.bundlr.network",
+      "solana",
+      provider,
+      { providerUrl: "https://api.devnet.solana.com" }
+    );
 
     console.log(bundler)
 
@@ -70,25 +68,25 @@ export const UploadMetadata: FC = ({}) => {
       // Check for valid bundlr node
       await bundler.utils.getBundlerAddress('solana');
     } catch (err) {
-      notify({ type: 'error', message: `${err}` });
-      return;
+      // notify({ type: 'error', message: `${err}` });
+      // return;
     }
     try {
       await bundler.ready();
     } catch (err) {
-      notify({ type: 'error', message: `${err}` });
-      return;
+      // notify({ type: 'error', message: `${err}` });
+      // return;
     } //@ts-ignore
     if (!bundler.address) {
-      notify({
-        type: 'error',
-        message: 'Unexpected error: bundlr address not found',
-      });
+      // notify({
+      //   type: 'error',
+      //   message: 'Unexpected error: bundlr address not found',
+      // });
     }
-    notify({
-      type: 'success',
-      message: `Connected to ${selected.network}`,
-    });
+    // notify({
+    //   type: 'success',
+    //   message: `Connected to Devnet`,
+    // });
     setAddress(bundler?.address);
     setBundlr(bundler);
   };
@@ -183,10 +181,15 @@ export const UploadMetadata: FC = ({}) => {
     setMetadataUrl(arweaveMetadataUrl);
   };
 
+  const test = async () => {
+    // await initializeBundlr();
+    uploadImage();
+  }
+
   return (
     <div className='bg-white shadow overflow-hidden sm:rounded-lg'>
       <div className='border-t border-gray-200 px-4 py-5 sm:p-0'>
-        <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+        {/* <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
 
           <div className='md:col-span-1'>
             <div className='px-4 sm:px-0'>
@@ -270,13 +273,13 @@ export const UploadMetadata: FC = ({}) => {
             </div>
           </div>
 
-        </div>
-        
+        </div> */}
+{/*         
         <div className='hidden sm:block' aria-hidden='true'>
           <div className='py-5'>
             <div className='border-t border-gray-200' />
           </div>
-        </div>
+        </div> */}
 
         <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
           <div className='md:col-span-1'>
@@ -292,6 +295,7 @@ export const UploadMetadata: FC = ({}) => {
               </p>
             </div>
           </div>
+
           <div className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1'>
             {!imageUrl ? (
               <div className='mt-1 sm:mt-0 sm:col-span-1'>
@@ -323,7 +327,7 @@ export const UploadMetadata: FC = ({}) => {
                           onChange={handleImageChange}
                         />
                       </label>
-                      <p className='pl-1'>or drag and drop</p>
+                      {/* <p className='pl-1'>or drag and drop</p> */}
                     </div>
                     {!selectedImage ? null : (
                       <p className='text-sm text-gray-500'>{selectedImage}</p>
@@ -339,18 +343,19 @@ export const UploadMetadata: FC = ({}) => {
               </div>
             )}
           </div>
+
           <div className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1'>
             <div className='px-4 py-5 bg-white space-y-6 sm:p-6'>
               {!imageUrl && (
                 <button
                   className='px-8 m-2 btn animate-pulse bg-gradient-to-r from-[#9945FF] to-[#14F195] hover:from-pink-500 hover:to-yellow-500 ...'
-                  onClick={async () => uploadImage()}
-                  disabled={!bundlr}>
+                  onClick={async () => test()}>
                   Upload Image
                 </button>
               )}
             </div>
           </div>
+
         </div>
 
         <div className='hidden sm:block' aria-hidden='true'>
@@ -402,7 +407,7 @@ export const UploadMetadata: FC = ({}) => {
                           onChange={handleMetadataChange}
                         />
                       </label>
-                      <p className='pl-1'>or drag and drop</p>
+                      {/* <p className='pl-1'>or drag and drop</p> */}
                     </div>
                     {!selectedFile ? null : (
                       <p className='text-sm text-gray-500'>{selectedFile}</p>
