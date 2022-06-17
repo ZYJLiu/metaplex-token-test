@@ -1,6 +1,6 @@
 import { FC } from 'react';
 
-import { UploadMetadata } from 'components/UploadMetadata';
+import { UploadMetadata } from "components/TestUploadMetaData";
 
 export const UploaderView: FC = ({ }) => {
 

@@ -187,6 +187,7 @@ export const UploadMetadata: FC = ({}) => {
     <div className='bg-white shadow overflow-hidden sm:rounded-lg'>
       <div className='border-t border-gray-200 px-4 py-5 sm:p-0'>
         <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
+
           <div className='md:col-span-1'>
             <div className='px-4 sm:px-0'>
               <h3 className='text-lg font-medium leading-6 text-gray-900'>
@@ -198,6 +199,7 @@ export const UploadMetadata: FC = ({}) => {
               </p>
             </div>
           </div>
+
           <div className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1'>
             <div className='px-4 py-5 bg-white space-y-6 sm:p-6'>
               <Listbox value={selected} onChange={setSelected}>
@@ -257,6 +259,7 @@ export const UploadMetadata: FC = ({}) => {
               </Listbox>
             </div>
           </div>
+
           <div className='mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-1'>
             <div className='px-4 py-5 bg-white space-y-6 sm:p-6'>
               <button
@@ -266,12 +269,15 @@ export const UploadMetadata: FC = ({}) => {
               </button>
             </div>
           </div>
+
         </div>
+        
         <div className='hidden sm:block' aria-hidden='true'>
           <div className='py-5'>
             <div className='border-t border-gray-200' />
           </div>
         </div>
+
         <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
           <div className='md:col-span-1'>
             <div className='px-4 sm:px-0'>
@@ -346,11 +352,13 @@ export const UploadMetadata: FC = ({}) => {
             </div>
           </div>
         </div>
+
         <div className='hidden sm:block' aria-hidden='true'>
           <div className='py-5'>
             <div className='border-t border-gray-200' />
           </div>
         </div>
+        
         <div className='py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
           <div className='md:col-span-1'>
             <div className='px-4 sm:px-0'>
