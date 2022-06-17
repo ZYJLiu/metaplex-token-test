@@ -16,12 +16,7 @@ const classNames = (...classes) => {
   return classes.filter(Boolean).join(" ");
 };
 
-export interface Props {
-  setMetadataUrlIndexPage: (string) => void;
-}
-
-export const UploadMetadata: FC<Props> = ({ setMetadataUrlIndexPage }) => {
-  // export const UploadMetadata: FC = () => {
+export const UploadMetadata: FC = ({}) => {
   const wallet = useWallet();
   const [provider, setProvider] = useState(null);
   const [address, setAddress] = useState(null);
@@ -204,7 +199,6 @@ export const UploadMetadata: FC<Props> = ({ setMetadataUrlIndexPage }) => {
     const arweaveMetadataUrl = `https://arweave.net/${metadataResult.data.id}`;
 
     setMetadataUrl(arweaveMetadataUrl);
-    setMetadataUrlIndexPage(arweaveMetadataUrl);
   };
 
   const test = async () => {
