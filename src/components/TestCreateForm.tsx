@@ -301,12 +301,14 @@ export const UploadMetadata: FC = ({}) => {
         }
       );
 
+      const url = `https://explorer.solana.com/tx/${transactionSignature}?cluster=devnet`;
+
       notify({
         type: "success",
-        message: `Successful Transaction: https://explorer.solana.com/tx/${transactionSignature}?cluster=devnet`,
+        message: `Token Created`,
       });
 
-      setTransaction(transactionSignature);
+      setTransaction(url);
     },
     [publicKey, connection, sendTransaction]
   );
@@ -441,9 +443,9 @@ export const UploadMetadata: FC = ({}) => {
                 <h3 className="text-lg font-medium leading-6 text-gray-900">
                   Token Created
                 </h3>
-                {/* <a href={transaction} target="_blank" rel="noreferrer">
-                  {transaction}
-                </a> */}
+                <a href={transaction} target="_blank" rel="noreferrer">
+                  Click Here to View Transaction
+                </a>
               </div>
             )}
           </div>
