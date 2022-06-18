@@ -5,7 +5,9 @@ import { QrCode } from "../../components/QrCode";
 export const SolanaPayView: FC = ({}) => {
   const [usdcAmount, setUsdcAmount] = useState("");
   const [tokenAmount, setTokenAmount] = useState("");
+  const [checkout, setCheckout] = useState(false);
 
+  console.log(checkout);
   // console.log("USDC", usdcAmount);
   // console.log("Token", tokenAmount);
 
@@ -17,12 +19,16 @@ export const SolanaPayView: FC = ({}) => {
         </h1>
         {/* CONTENT GOES HERE */}
         <div className="text-center">
-          <Checkout
-            submitTarget="/checkout"
-            setUsdcAmount={setUsdcAmount}
-            setTokenAmount={setTokenAmount}
-          />
-          <QrCode usdcAmount={usdcAmount} tokenAmount={tokenAmount} />
+          {checkout ? (
+            <QrCode usdcAmount={usdcAmount} tokenAmount={tokenAmount} />
+          ) : (
+            <Checkout
+              // submitTarget="/checkout"
+              setUsdcAmount={setUsdcAmount}
+              setTokenAmount={setTokenAmount}
+              setCheckout={setCheckout}
+            />
+          )}
         </div>
       </div>
     </div>
