@@ -15,7 +15,7 @@ import useUserSOLBalanceStore from "../../stores/useUserSOLBalanceStore";
 // import { CreateToken } from 'components/CreateToken';
 import { CreateToken } from "components/TestCreateToken";
 // import { UploadMetadata } from "components/TestUploadMetaData";
-import { UploadMetadata } from "components/TestCreateForm";
+import { UploadMetadata } from "components/TestCreateForm-working";
 
 export const HomeView: FC = ({}) => {
   const [metadataUrlIndexPage, setMetadataUrlIndexPage] = useState(null);

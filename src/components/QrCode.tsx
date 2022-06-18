@@ -20,6 +20,7 @@ import BackLink from "./BackLink";
 import { FC, useCallback, useState } from "react";
 
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 
 import BigNumber from "bignumber.js";
 
@@ -30,9 +31,10 @@ import { useRouter } from "next/router";
 interface Props {
   usdcAmount: string;
   tokenAmount: string;
+  wallet: string;
 }
 
-export const QrCode: FC<Props> = ({ usdcAmount, tokenAmount }) => {
+export const QrCode: FC<Props> = ({ usdcAmount, tokenAmount, wallet }) => {
   console.log("USDC", usdcAmount);
   console.log("Token", tokenAmount);
 
@@ -42,18 +44,27 @@ export const QrCode: FC<Props> = ({ usdcAmount, tokenAmount }) => {
   const network = WalletAdapterNetwork.Devnet;
   const endpoint = clusterApiUrl(network);
   const connection = new Connection(endpoint);
+  const { publicKey } = useWallet();
+
+  //test placeholder
+  // const publicKey = new PublicKey(
+  //   "4B65V1ySBG35UbStDTUDvBTXRfxh6v5tRbLnVrVLpYD2"
+  // );
 
   // Show the QR code
   const searchParams = new URLSearchParams();
+
+  if (publicKey) {
+    searchParams.append("wallet", publicKey.toString());
+    console.log("checkout", publicKey.toString());
+  } else {
+    searchParams.append("wallet", wallet.toString());
+  }
+
   const reference = useMemo(() => Keypair.generate().publicKey, []);
   searchParams.append("reference", reference.toString());
   searchParams.append("USDC", usdcAmount.toString());
   searchParams.append("Token", tokenAmount.toString());
-
-  //test placeholder
-  const publicKey = new PublicKey(
-    "4B65V1ySBG35UbStDTUDvBTXRfxh6v5tRbLnVrVLpYD2"
-  );
 
   const qrRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -86,7 +97,7 @@ export const QrCode: FC<Props> = ({ usdcAmount, tokenAmount }) => {
           connection,
           signatureInfo.signature,
           {
-            recipient: publicKey,
+            recipient: new PublicKey(wallet),
             amount: new BigNumber(usdcAmount),
             splToken: usdcAddress,
             reference,

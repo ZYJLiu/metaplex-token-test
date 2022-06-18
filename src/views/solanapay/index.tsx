@@ -1,8 +1,11 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { Checkout } from "../../components/Checkout";
 import { QrCode } from "../../components/QrCode";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 export const SolanaPayView: FC = ({}) => {
+  const { publicKey } = useWallet();
+  const [wallet, setWallet] = useState("");
   const [usdcAmount, setUsdcAmount] = useState("");
   const [tokenAmount, setTokenAmount] = useState("");
   const [checkout, setCheckout] = useState(false);
@@ -10,6 +13,12 @@ export const SolanaPayView: FC = ({}) => {
   console.log(checkout);
   // console.log("USDC", usdcAmount);
   // console.log("Token", tokenAmount);
+
+  useEffect(() => {
+    if (publicKey) {
+      setWallet(publicKey.toString());
+    }
+  }, [publicKey]);
 
   return (
     <div className="md:hero mx-auto p-4">
@@ -20,13 +29,19 @@ export const SolanaPayView: FC = ({}) => {
         {/* CONTENT GOES HERE */}
         <div className="text-center">
           {checkout ? (
-            <QrCode usdcAmount={usdcAmount} tokenAmount={tokenAmount} />
+            <QrCode
+              usdcAmount={usdcAmount}
+              tokenAmount={tokenAmount}
+              wallet={wallet}
+            />
           ) : (
             <Checkout
               // submitTarget="/checkout"
               setUsdcAmount={setUsdcAmount}
               setTokenAmount={setTokenAmount}
               setCheckout={setCheckout}
+              setWallet={setWallet}
+              publickey={publicKey}
             />
           )}
         </div>
