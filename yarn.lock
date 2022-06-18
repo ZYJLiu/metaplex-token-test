@@ -1890,6 +1890,26 @@
   dependencies:
     "buffer" "~6.0.3"
 
+"@solana/pay@^0.2.0":
+  "integrity" "sha512-eQpFzPaWIbeVkdgSqRun5nR2NfIg9FiBqnaf7+PxN/PanCLCiDVH2OmQhFCZbFBx4jHo7GOFHQh7l/mYWzsT8g=="
+  "resolved" "https://registry.npmjs.org/@solana/pay/-/pay-0.2.0.tgz"
+  "version" "0.2.0"
+  dependencies:
+    "@solana/qr-code-styling" "^1.6.0-beta.0"
+    "@solana/spl-token" "^0.2.0"
+    "@solana/web3.js" "^1.36.0"
+    "bignumber.js" "^9.0.2"
+    "cross-fetch" "^3.1.5"
+    "js-base64" "^3.7.2"
+    "tweetnacl" "^1.0.3"
+
+"@solana/qr-code-styling@^1.6.0-beta.0":
+  "integrity" "sha512-JYV016q+PeHdK6GGGFzqWSR7x35gFS6I1bYAQEQ60aApGE7+2OM3q4he3Nzg3Hdxl/frMnli6Z0bQ4Xm+i76Kg=="
+  "resolved" "https://registry.npmjs.org/@solana/qr-code-styling/-/qr-code-styling-1.6.0-beta.0.tgz"
+  "version" "1.6.0-beta.0"
+  dependencies:
+    "qrcode-generator" "^1.4.3"
+
 "@solana/spl-token@^0.2.0":
   "integrity" "sha512-RWcn31OXtdqIxmkzQfB2R+WpsJOVS6rKuvpxJFjvik2LyODd+WN58ZP3Rpjpro03fscGAkzlFuP3r42doRJgyQ=="
   "resolved" "https://registry.npmjs.org/@solana/spl-token/-/spl-token-0.2.0.tgz"
@@ -4734,6 +4754,11 @@
     "@sideway/formula" "^3.0.0"
     "@sideway/pinpoint" "^2.0.0"
 
+"js-base64@^3.7.2":
+  "integrity" "sha512-NnRs6dsyqUXejqk/yv2aiXlAvOs56sLkX6nUdeaNezI5LFFLlsZjOThmwnrcwh5ZZRwZlCMnVAY3CvhIhoVEKQ=="
+  "resolved" "https://registry.npmjs.org/js-base64/-/js-base64-3.7.2.tgz"
+  "version" "3.7.2"
+
 "js-sha256@^0.9.0":
   "integrity" "sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA=="
   "resolved" "https://registry.npmjs.org/js-sha256/-/js-sha256-0.9.0.tgz"
@@ -5631,6 +5656,11 @@
   "integrity" "sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A=="
   "resolved" "https://registry.npmjs.org/punycode/-/punycode-2.1.1.tgz"
   "version" "2.1.1"
+
+"qrcode-generator@^1.4.3":
+  "integrity" "sha512-HM7yY8O2ilqhmULxGMpcHSF1EhJJ9yBj8gvDEuZ6M+KGJ0YY2hKpnXvRD+hZPLrDVck3ExIGhmPtSdcjC+guuw=="
+  "resolved" "https://registry.npmjs.org/qrcode-generator/-/qrcode-generator-1.4.4.tgz"
+  "version" "1.4.4"
 
 "qs@^6.9.4":
   "integrity" "sha512-O5RlPh0VFtR78y79rgcgKK4wbAI0C5zGVLztOIdpWX6ep368q5Hv6XRxDvXuZ9q3C6v+e3n8UfZZJw7IIG27eQ=="
