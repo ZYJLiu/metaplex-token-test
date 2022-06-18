@@ -58,13 +58,20 @@ async function post(
   res: NextApiResponse<MakeTransactionOutputData | ErrorOutput>
 ) {
   try {
+    // placeholders
+    // const amount1 = new BigNumber(1);
+    // const amount2 = new BigNumber(1);
+
     // We pass the selected items in the query, calculate the expected cost
-    const amount = new BigNumber(100);
-    if (amount.toNumber() === 0) {
-      console.log("Returning 400: amount = 0");
-      res.status(400).json({ error: "Can't checkout with charge of 0" });
-      return;
-    }
+    // const amount = new BigNumber(100);
+    // if (amount.toNumber() === 0) {
+    //   console.log("Returning 400: amount = 0");
+    //   res.status(400).json({ error: "Can't checkout with charge of 0" });
+    //   return;
+    // }
+
+    const { USDC } = req.query;
+    const { Token } = req.query;
 
     // We pass the reference to use in the query
     const { reference } = req.query;
@@ -169,10 +176,6 @@ async function post(
       }
     }
 
-    // placeholders
-    const amount1 = new BigNumber(1);
-    const amount2 = new BigNumber(1);
-
     const transferInstruction = createRedeemInstruction(
       {
         rewardData: rewardDataPda,
@@ -185,8 +188,8 @@ async function post(
         customer: buyerPublicKey,
       },
       {
-        usdcToken: amount1.toNumber() * 10 ** usdcMint.decimals,
-        rewardToken: amount2.toNumber() * 10 ** usdcMint.decimals,
+        usdcToken: +USDC * 10 ** usdcMint.decimals,
+        rewardToken: +Token * 10 ** usdcMint.decimals,
       }
     );
 

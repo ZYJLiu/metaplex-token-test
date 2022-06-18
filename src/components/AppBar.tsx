@@ -80,11 +80,11 @@ export const AppBar: FC = (props) => {
             <a className="mr-8">Token Creator</a>
           </Link>
           <Link href="/test">
-            <a className="mr-4">SolanaPay</a>
+            <a className="mr-4">SolanaPay Checkout</a>
           </Link>
-          <Link href="/uploader">
+          {/* <Link href="/uploader">
             <a className="mr-8">Upload Metadata</a>
-          </Link>
+          </Link> */}
           {/* <Link href="/metadata">
             <a className="mr-4">Token Metadata</a>
           </Link> */}

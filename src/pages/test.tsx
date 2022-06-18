@@ -1,17 +1,17 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { TestView } from "../views";
+import { SolanaPayView } from "../views";
 
-const Test: NextPage = (props) => {
+const SolanaPay: NextPage = (props) => {
   return (
     <div>
       <Head>
         <title>Solana Scaffold</title>
         <meta name="description" content="Solana Scaffold" />
       </Head>
-      <TestView />
+      <SolanaPayView />
     </div>
   );
 };
 
-export default Test;
+export default SolanaPay;

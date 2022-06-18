@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { TestView } from "../views";
+import { SolanaPayView } from "../views";
 import { useEffect, useMemo, useRef } from "react";
 
 import {
@@ -15,12 +15,25 @@ import {
 } from "@solana/pay";
 
 import { clusterApiUrl, Connection, Keypair } from "@solana/web3.js";
+import PageHeading from "./PageHeading";
+import BackLink from "./BackLink";
+import { FC, useCallback, useState } from "react";
 
-const Test: NextPage = (props) => {
+interface Props {
+  usdcAmount: string;
+  tokenAmount: string;
+}
+
+export const QrCode: FC<Props> = ({ usdcAmount, tokenAmount }) => {
+  console.log("USDC", usdcAmount);
+  console.log("Token", tokenAmount);
+
   // Show the QR code
   const searchParams = new URLSearchParams();
   const reference = useMemo(() => Keypair.generate().publicKey, []);
   searchParams.append("reference", reference.toString());
+  searchParams.append("USDC", usdcAmount.toString());
+  searchParams.append("Token", tokenAmount.toString());
 
   useEffect(() => {
     const { location } = window;
@@ -40,12 +53,12 @@ const Test: NextPage = (props) => {
   });
 
   const qrRef = useRef<HTMLDivElement>(null);
+
   return (
-    <div>
-      {" "}
+    <div className="flex flex-col items-center gap-8">
+      {/* <BackLink href="/test">Cancel</BackLink> */}
+      {/* <PageHeading>Checkout {}</PageHeading> */}
       <div ref={qrRef} />
     </div>
   );
 };
-
-export default Test;
