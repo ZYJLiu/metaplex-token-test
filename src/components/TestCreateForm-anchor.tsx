@@ -105,6 +105,7 @@ export const UploadMetadata: FC = ({}) => {
         metadata: metadataUrl,
         symbol: symbol,
         tokenName: tokenName,
+        reward: reward,
       });
     } else {
       urlMounted.current = true;
@@ -183,7 +184,7 @@ export const UploadMetadata: FC = ({}) => {
 
     if (balance < amount) {
       // Fund your account with the difference
-      await bundlr.fund(amount * LAMPORTS_PER_SOL);
+      await bundlr.fund(amount * LAMPORTS_PER_SOL * 2);
     }
 
     const imageResult = await bundlr.uploader.upload(imageFile, [
@@ -238,13 +239,6 @@ export const UploadMetadata: FC = ({}) => {
 
   const onClick = useCallback(
     async (form) => {
-      const lamports = await getMinimumBalanceForRentExemptMint(connection);
-      // const mintKeypair = Keypair.generate();
-      // const tokenATA = await getAssociatedTokenAddress(
-      //   mintKeypair.publicKey,
-      //   publicKey
-      // );
-
       const programId = new PublicKey(idl.metadata.address);
       if (!publicKey) {
         console.log("error", "Wallet not connected!");
@@ -265,66 +259,25 @@ export const UploadMetadata: FC = ({}) => {
 
       const metadataPDA = await findMetadataPda(rewardMintPda);
 
-      const tokenMetadata = {
-        name: form.tokenName,
-        symbol: form.symbol,
-        uri: form.metadata,
-        sellerFeeBasisPoints: 0,
-        creators: null,
-        collection: null,
-        uses: null,
-      } as DataV2;
+      const TOKEN_METADATA_PROGRAM_ID = new PublicKey(
+        "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+      );
 
+      console.log("reward %", form.reward);
       const createNewTokenTransaction = new Transaction().add(
-        // SystemProgram.createAccount({
-        //   fromPubkey: publicKey,
-        //   newAccountPubkey: mintKeypair.publicKey,
-        //   space: MINT_SIZE,
-        //   lamports: lamports,
-        //   programId: TOKEN_PROGRAM_ID,
-        // }),
-        // createInitializeMintInstruction(
-        //   mintKeypair.publicKey,
-        //   form.decimals,
-        //   publicKey,
-        //   publicKey,
-        //   TOKEN_PROGRAM_ID
-        // ),
-        // createAssociatedTokenAccountInstruction(
-        //   publicKey,
-        //   tokenATA,
-        //   publicKey,
-        //   mintKeypair.publicKey
-        // ),
-        // createMintToInstruction(
-        //   mintKeypair.publicKey,
-        //   tokenATA,
-        //   publicKey,
-        //   form.amount * Math.pow(10, form.decimals)
-        // ),
-
-        // createCreateTokenRewardInstruction(
-        //   {
-        //     rewardData: rewardDataPda,
-        //     rewardMint: rewardMintPda,
-        //     user: publicKey,
-        //   },
-        //   { rewardBasisPoints: +reward * 100 }
-        // )
-
-        createCreateMetadataAccountV2Instruction(
+        createCreateTokenRewardInstruction(
           {
+            rewardData: rewardDataPda,
+            rewardMint: rewardMintPda,
+            user: publicKey,
             metadata: metadataPDA,
-            mint: rewardMintPda,
-            mintAuthority: rewardMintPda,
-            payer: publicKey,
-            updateAuthority: publicKey,
+            tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
           },
           {
-            createMetadataAccountArgsV2: {
-              data: tokenMetadata,
-              isMutable: false,
-            },
+            rewardBasisPoints: +form.reward * 100,
+            uri: form.metadata.toString(),
+            name: form.tokenName.toString(),
+            symbol: form.symbol.toString(),
           }
         )
       );

@@ -16,13 +16,16 @@ import * as web3 from '@solana/web3.js'
  */
 export type CreateTokenRewardInstructionArgs = {
   rewardBasisPoints: beet.bignum
+  uri: string
+  name: string
+  symbol: string
 }
 /**
  * @category Instructions
  * @category CreateTokenReward
  * @category generated
  */
-export const createTokenRewardStruct = new beet.BeetArgsStruct<
+export const createTokenRewardStruct = new beet.FixableBeetArgsStruct<
   CreateTokenRewardInstructionArgs & {
     instructionDiscriminator: number[] /* size: 8 */
   }
@@ -30,6 +33,9 @@ export const createTokenRewardStruct = new beet.BeetArgsStruct<
   [
     ['instructionDiscriminator', beet.uniformFixedSizeArray(beet.u8, 8)],
     ['rewardBasisPoints', beet.u64],
+    ['uri', beet.utf8String],
+    ['name', beet.utf8String],
+    ['symbol', beet.utf8String],
   ],
   'CreateTokenRewardInstructionArgs'
 )
@@ -39,6 +45,8 @@ export const createTokenRewardStruct = new beet.BeetArgsStruct<
  * @property [_writable_] rewardData
  * @property [_writable_] rewardMint
  * @property [_writable_, **signer**] user
+ * @property [_writable_] metadata
+ * @property [] tokenMetadataProgram
  * @category Instructions
  * @category CreateTokenReward
  * @category generated
@@ -47,6 +55,8 @@ export type CreateTokenRewardInstructionAccounts = {
   rewardData: web3.PublicKey
   rewardMint: web3.PublicKey
   user: web3.PublicKey
+  metadata: web3.PublicKey
+  tokenMetadataProgram: web3.PublicKey
 }
 
 export const createTokenRewardInstructionDiscriminator = [
@@ -67,7 +77,8 @@ export function createCreateTokenRewardInstruction(
   accounts: CreateTokenRewardInstructionAccounts,
   args: CreateTokenRewardInstructionArgs
 ) {
-  const { rewardData, rewardMint, user } = accounts
+  const { rewardData, rewardMint, user, metadata, tokenMetadataProgram } =
+    accounts
 
   const [data] = createTokenRewardStruct.serialize({
     instructionDiscriminator: createTokenRewardInstructionDiscriminator,
@@ -101,6 +112,16 @@ export function createCreateTokenRewardInstruction(
     },
     {
       pubkey: splToken.TOKEN_PROGRAM_ID,
+      isWritable: false,
+      isSigner: false,
+    },
+    {
+      pubkey: metadata,
+      isWritable: true,
+      isSigner: false,
+    },
+    {
+      pubkey: tokenMetadataProgram,
       isWritable: false,
       isSigner: false,
     },

@@ -56,9 +56,10 @@ export const QrCode: FC<Props> = ({ usdcAmount, tokenAmount, wallet }) => {
 
   if (publicKey) {
     searchParams.append("wallet", publicKey.toString());
-    console.log("checkout", publicKey.toString());
+    console.log("QR pubkey", publicKey.toString());
   } else {
     searchParams.append("wallet", wallet.toString());
+    console.log("QR wallet", wallet.toString());
   }
 
   const reference = useMemo(() => Keypair.generate().publicKey, []);

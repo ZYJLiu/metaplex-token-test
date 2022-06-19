@@ -90,17 +90,19 @@ async function post(
       return;
     }
 
-    // const { wallet } = req.query;
-    // if (!wallet) {
-    //   console.log("Returning 400: no wallet");
-    //   res.status(400).json({ error: "No walet provided" });
-    //   return;
-    // }
+    const { wallet } = req.query;
+    if (!wallet) {
+      console.log("Returning 400: no wallet");
+      res.status(400).json({ error: "No walet provided" });
+      return;
+    }
 
-    // placeholder
-    const publicKey = new PublicKey(
-      "4B65V1ySBG35UbStDTUDvBTXRfxh6v5tRbLnVrVLpYD2"
-    );
+    // // placeholder
+    // const publicKey = new PublicKey(
+    //   "HLGGvJVFn9CasLzQKfKJtoAUWM17u3sHyXDZE6Phwr13"
+    // );
+
+    const publicKey = new PublicKey(wallet);
 
     const buyerPublicKey = new PublicKey(account);
 
