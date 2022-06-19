@@ -19,10 +19,6 @@ import { CreateToken } from "components/TestCreateToken";
 import { UploadMetadata } from "components/TestCreateForm-anchor";
 
 export const HomeView: FC = ({}) => {
-  const [metadataUrlIndexPage, setMetadataUrlIndexPage] = useState(null);
-
-  console.log("Index Page", metadataUrlIndexPage);
-
   const wallet = useWallet();
   const { connection } = useConnection();
 
@@ -46,10 +42,6 @@ export const HomeView: FC = ({}) => {
           {/* <RequestAirdrop my-2 /> */}
           {wallet && <p>SOL Balance: {(balance || 0).toLocaleString()}</p>}
           <UploadMetadata />
-          {/* <UploadMetadata
-            setMetadataUrlIndexPage={(URL) => setMetadataUrlIndexPage(URL)}
-          /> */}
-          {/* <CreateToken metadataUrlIndexPage={metadataUrlIndexPage} /> */}
         </div>
       </div>
     </div>
