@@ -85,6 +85,9 @@ export const AppBar: FC = (props) => {
           <Link href="/SolanaPay">
             <a className="mr-4">SolanaPay Checkout</a>
           </Link>
+          <Link href="/mint">
+            <a className="mr-4">Mint NFT</a>
+          </Link>
           {/* <Link href="/uploader">
             <a className="mr-8">Upload Metadata</a>
           </Link> */}
