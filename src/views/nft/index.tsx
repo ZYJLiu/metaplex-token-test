@@ -16,9 +16,9 @@ import useUserSOLBalanceStore from "../../stores/useUserSOLBalanceStore";
 import { CreateToken } from "components/TestCreateToken";
 // import { UploadMetadata } from "components/TestUploadMetaData";
 // import { UploadMetadata } from "components/TestCreateForm-working";
-import { UploadMetadata } from "components/TestCreateForm-anchor";
+import { CreateNft } from "components/CreateNftForm";
 
-export const HomeView: FC = ({}) => {
+export const NftView: FC = ({}) => {
   const wallet = useWallet();
   const { connection } = useConnection();
 
@@ -36,12 +36,12 @@ export const HomeView: FC = ({}) => {
     <div className="md:hero mx-auto p-4">
       <div className="md:hero-content flex flex-col">
         <h1 className="text-center text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-tr from-[#9945FF] to-[#14F195]">
-          Create Reward Token
+          Create NFT
         </h1>
         <div className="text-center">
           {/* <RequestAirdrop my-2 /> */}
           {wallet && <p>SOL Balance: {(balance || 0).toLocaleString()}</p>}
-          <UploadMetadata />
+          <CreateNft />
         </div>
       </div>
     </div>

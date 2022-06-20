@@ -24,7 +24,7 @@ import { usdcAddress } from "../../lib/addresses";
 
 import idl from "./token_rewards.json";
 
-import { createRedeemInstruction } from "../../../generated/instructions/redeem";
+import { createRedeemInstruction } from "../../../programs/rewards/generated/instructions/redeem";
 
 import BigNumber from "bignumber.js";
 

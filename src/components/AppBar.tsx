@@ -77,7 +77,10 @@ export const AppBar: FC = (props) => {
         {/* Wallet & Settings */}
         <div className="navbar-end">
           <Link href="/">
-            <a className="mr-8">Token Creator</a>
+            <a className="mr-8">Create Token</a>
+          </Link>
+          <Link href="/nft">
+            <a className="mr-8">Create NFT</a>
           </Link>
           <Link href="/SolanaPay">
             <a className="mr-4">SolanaPay Checkout</a>

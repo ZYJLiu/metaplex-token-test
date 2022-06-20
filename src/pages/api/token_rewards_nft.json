@@ -1,0 +1,165 @@
+{
+  "version": "0.1.0",
+  "name": "token_rewards_nft",
+  "instructions": [
+    {
+      "name": "createNftReward",
+      "accounts": [
+        {
+          "name": "rewardData",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rewardMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "metadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "rewardBasisPoints",
+          "type": "u64"
+        },
+        {
+          "name": "uri",
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "symbol",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "mintNft",
+      "accounts": [
+        {
+          "name": "rewardData",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rewardMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "customerNft",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "customer",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "updateNftReward",
+      "accounts": [
+        {
+          "name": "rewardData",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "rewardBasisPoints",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "TokenData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "type": "publicKey"
+          },
+          {
+            "name": "rewardMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "rewardBump",
+            "type": "u8"
+          },
+          {
+            "name": "rewardBasisPoints",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "PDA",
+      "msg": "PDA not match"
+    }
+  ],
+  "metadata": {
+    "address": "F6mQpwzq6MtV4GxPeVL9TU6PDpUNBwd3z6rxRP26Sf5p",
+    "origin": "anchor",
+    "binaryVersion": "0.24.2",
+    "libVersion": "0.24.2"
+  }
+}

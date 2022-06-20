@@ -28,8 +28,8 @@ import {
 } from "@metaplex-foundation/mpl-token-metadata";
 import { findMetadataPda } from "@metaplex-foundation/js";
 
-import { createCreateTokenRewardInstruction } from "../../programs/rewards/generated/instructions/createTokenReward";
-import idl from "../pages/api/token_rewards.json";
+import { createCreateNftRewardInstruction } from "../../programs/nft/generated/instructions/createNftReward";
+import idl from "../pages/api/token_rewards_nft.json";
 
 const bundlers = [
   { id: 1, network: "mainnet-beta", name: "https://node1.bundlr.network" },
@@ -40,7 +40,7 @@ const classNames = (...classes) => {
   return classes.filter(Boolean).join(" ");
 };
 
-export const UploadMetadata: FC = ({}) => {
+export const CreateNft: FC = ({}) => {
   const wallet = useWallet();
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
@@ -265,7 +265,7 @@ export const UploadMetadata: FC = ({}) => {
 
       console.log("reward %", form.reward);
       const createNewTokenTransaction = new Transaction().add(
-        createCreateTokenRewardInstruction(
+        createCreateNftRewardInstruction(
           {
             rewardData: rewardDataPda,
             rewardMint: rewardMintPda,
