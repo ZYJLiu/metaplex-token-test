@@ -33,6 +33,7 @@ export const SolanaPayView: FC = ({}) => {
               usdcAmount={usdcAmount}
               tokenAmount={tokenAmount}
               wallet={wallet}
+              setCheckout={setCheckout}
             />
           ) : (
             <Checkout

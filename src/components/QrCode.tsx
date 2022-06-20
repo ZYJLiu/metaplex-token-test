@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef } from "react";
 
 import {
   createQR,
+  createQROptions,
   encodeURL,
   TransferRequestURLFields,
   findReference,
@@ -32,9 +33,15 @@ interface Props {
   usdcAmount: string;
   tokenAmount: string;
   wallet: string;
+  setCheckout: (string) => void;
 }
 
-export const QrCode: FC<Props> = ({ usdcAmount, tokenAmount, wallet }) => {
+export const QrCode: FC<Props> = ({
+  usdcAmount,
+  tokenAmount,
+  wallet,
+  setCheckout,
+}) => {
   console.log("USDC", usdcAmount);
   console.log("Token", tokenAmount);
 
@@ -46,12 +53,7 @@ export const QrCode: FC<Props> = ({ usdcAmount, tokenAmount, wallet }) => {
   const connection = new Connection(endpoint);
   const { publicKey } = useWallet();
 
-  //test placeholder
-  // const publicKey = new PublicKey(
-  //   "4B65V1ySBG35UbStDTUDvBTXRfxh6v5tRbLnVrVLpYD2"
-  // );
-
-  // Show the QR code
+  //QR code
   const searchParams = new URLSearchParams();
 
   if (publicKey) {
@@ -64,10 +66,25 @@ export const QrCode: FC<Props> = ({ usdcAmount, tokenAmount, wallet }) => {
 
   const reference = useMemo(() => Keypair.generate().publicKey, []);
   searchParams.append("reference", reference.toString());
+
   searchParams.append("USDC", usdcAmount.toString());
   searchParams.append("Token", tokenAmount.toString());
 
+  const [size, setSize] = useState(() =>
+    typeof window === "undefined"
+      ? 400
+      : Math.min(window.screen.availWidth - 10, 512)
+  );
+  useEffect(() => {
+    const listener = () =>
+      setSize(Math.min(window.screen.availWidth - 10, 512));
+
+    window.addEventListener("resize", listener);
+    return () => window.removeEventListener("resize", listener);
+  }, []);
+
   const qrRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const { location } = window;
     const apiUrl = `${location.protocol}//${
@@ -79,7 +96,7 @@ export const QrCode: FC<Props> = ({ usdcAmount, tokenAmount, wallet }) => {
       message: "Test Message",
     };
     const solanaUrl = encodeURL(urlParams);
-    const qr = createQR(solanaUrl, 512, "white");
+    const qr = createQR(solanaUrl, size, "white");
 
     qrRef.current.innerHTML = "";
     qr.append(qrRef.current);
@@ -126,10 +143,16 @@ export const QrCode: FC<Props> = ({ usdcAmount, tokenAmount, wallet }) => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center gap-8">
-      {/* <BackLink href="/test">Cancel</BackLink> */}
+    <div className="flex flex-col items-center gap-1">
+      {/* <BackLink href="/SolanaPay">Cancel</BackLink> */}
       {/* <PageHeading>Checkout {}</PageHeading> */}
       <div ref={qrRef} />
+      <button
+        className="px-8 m-2 btn animate-pulse bg-gradient-to-r from-[#9945FF] to-[#14F195] hover:from-pink-500 hover:to-yellow-500 ..."
+        onClick={async () => setCheckout(false)}
+      >
+        <span> Cancel </span>
+      </button>
     </div>
   );
 };
