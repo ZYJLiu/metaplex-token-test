@@ -31,10 +31,10 @@ import { useRouter } from "next/router";
 
 interface Props {
   wallet: string;
-  setCheckout: (string) => void;
+  setWallet: (string) => void;
 }
 
-export const QrCode: FC<Props> = ({ wallet, setCheckout }) => {
+export const QrCode: FC<Props> = ({ wallet, setWallet }) => {
   const router = useRouter();
 
   // Get a connection to Solana devnet
@@ -90,44 +90,44 @@ export const QrCode: FC<Props> = ({ wallet, setCheckout }) => {
   });
 
   // Check every 0.5s if the transaction is completed
-  // useEffect(() => {
-  //   const interval = setInterval(async () => {
-  //     try {
-  //       // Check if there is any transaction for the reference
-  //       const signatureInfo = await findReference(connection, reference, {
-  //         finality: "confirmed",
-  //       });
-  //       // Validate that the transaction has the expected recipient, amount and SPL token
-  //       await validateTransfer(
-  //         connection,
-  //         signatureInfo.signature,
-  //         {
-  //           recipient: new PublicKey(wallet),
-  //           amount: new BigNumber(0),
-  //           splToken: usdcAddress,
-  //           reference,
-  //         },
-  //         { commitment: "confirmed" }
-  //       );
-  //       console.log("confirmed");
-  //       router.push("/confirmed");
-  //     } catch (e) {
-  //       if (e instanceof FindReferenceError) {
-  //         // No transaction found yet, ignore this error
-  //         return;
-  //       }
-  //       if (e instanceof ValidateTransferError) {
-  //         // Transaction is invalid
-  //         console.error("Transaction is invalid", e);
-  //         return;
-  //       }
-  //       console.error("Unknown error", e);
-  //     }
-  //   }, 500);
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, []);
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        // Check if there is any transaction for the reference
+        const signatureInfo = await findReference(connection, reference, {
+          finality: "confirmed",
+        });
+        // // Validate that the transaction has the expected recipient, amount and SPL token
+        // await validateTransfer(
+        //   connection,
+        //   signatureInfo.signature,
+        //   {
+        //     recipient: new PublicKey(wallet),
+        //     amount: new BigNumber(0),
+        //     splToken: usdcAddress,
+        //     reference,
+        //   },
+        //   { commitment: "confirmed" }
+        // );
+        router.push("/confirmedNft");
+        // console.log("confirmed");
+      } catch (e) {
+        if (e instanceof FindReferenceError) {
+          // No transaction found yet, ignore this error
+          return;
+        }
+        if (e instanceof ValidateTransferError) {
+          // Transaction is invalid
+          console.error("Transaction is invalid", e);
+          return;
+        }
+        console.error("Unknown error", e);
+      }
+    }, 500);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col items-center gap-1">
@@ -136,7 +136,7 @@ export const QrCode: FC<Props> = ({ wallet, setCheckout }) => {
       <div ref={qrRef} />
       <button
         className="px-8 m-2 btn animate-pulse bg-gradient-to-r from-[#9945FF] to-[#14F195] hover:from-pink-500 hover:to-yellow-500 ..."
-        onClick={async () => setCheckout(false)}
+        onClick={async () => setWallet("")}
       >
         <span> Cancel </span>
       </button>
