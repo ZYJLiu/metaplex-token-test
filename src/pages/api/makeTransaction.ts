@@ -221,10 +221,18 @@ async function post(
       }
     }
 
-    if (buyerNft && buyerNft.amount < BigInt(5)) {
+    const burnInstruction = createBurnInstruction(
+      customerRewardNft,
+      rewardMintPdaNft,
+      buyerPublicKey,
+      1
+    );
+
+    if (buyerNft && buyerNft.amount > BigInt(0)) {
+      transaction.add(burnInstruction);
+    } else if (buyerNft) {
       transaction.add(transferInstructionNft);
     }
-
     //test
     let amount = +USDC;
 

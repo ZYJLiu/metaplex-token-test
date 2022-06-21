@@ -10,6 +10,8 @@ import {
   createAssociatedTokenAccountInstruction,
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
+  createBurnInstruction,
+  burn,
 } from "@solana/spl-token";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import {
@@ -142,6 +144,13 @@ async function post(
       ASSOCIATED_TOKEN_PROGRAM_ID
     );
 
+    // const burnInstruction = createBurnInstruction(
+    //   customerNft,
+    //   rewardMintPda,
+    //   buyerPublicKey,
+    //   1
+    // );
+
     let buyer: Account;
     try {
       buyer = await getAccount(
@@ -181,6 +190,7 @@ async function post(
 
     // Add both instructions to the transaction
     transaction.add(transferInstruction);
+    // transaction.add(burnInstruction);
 
     // Serialize the transaction and convert to base64 to return it
     const serializedTransaction = transaction.serialize({
