@@ -5,3 +5,4 @@ export { BasicsView } from "./basics";
 export { SolanaPayView } from "./solanapay";
 export { NftView } from "./nft";
 export { MintView } from "./mint";
+export { UpdateView } from "./update";

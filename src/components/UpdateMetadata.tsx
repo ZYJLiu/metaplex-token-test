@@ -2,19 +2,20 @@ import { FC, useState, Fragment, useEffect, useRef, useCallback } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 import { WebBundlr } from "@bundlr-network/client";
-import {
-  LAMPORTS_PER_SOL,
-  Transaction,
-  PublicKey,
-} from "@solana/web3.js";
+import { LAMPORTS_PER_SOL, Transaction, PublicKey } from "@solana/web3.js";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 
 import { notify } from "../utils/notifications";
 
 import { findMetadataPda } from "@metaplex-foundation/js";
+import {
+  DataV2,
+  createUpdateMetadataAccountV2Instruction,
+} from "@metaplex-foundation/mpl-token-metadata";
 
-import { createCreateNftRewardInstruction } from "../../programs/nft/generated/instructions/createNftReward";
-import idl from "../pages/api/token_rewards_nft.json";
+import { createUpdateRewardInstruction } from "../../programs/rewards/generated/instructions/updateReward";
+
+import idl from "../pages/api/token_rewards.json";
 
 const bundlers = [
   { id: 1, network: "mainnet-beta", name: "https://node1.bundlr.network" },
@@ -25,7 +26,7 @@ const classNames = (...classes) => {
   return classes.filter(Boolean).join(" ");
 };
 
-export const CreateNft: FC = ({}) => {
+export const UpdateMetadata: FC = ({}) => {
   const wallet = useWallet();
   const { publicKey, sendTransaction } = useWallet();
   const { connection } = useConnection();
@@ -248,30 +249,44 @@ export const CreateNft: FC = ({}) => {
         "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
       );
 
-      console.log("reward %", form.reward);
-      const createNewTokenTransaction = new Transaction().add(
-        createCreateNftRewardInstruction(
+      const tokenMetadata = {
+        name: form.tokenName,
+        symbol: form.symbol,
+        uri: form.metadata,
+        sellerFeeBasisPoints: 0,
+        creators: null,
+        collection: null,
+        uses: null,
+      } as DataV2;
+
+      const updateMetadataTransaction = new Transaction().add(
+        createUpdateMetadataAccountV2Instruction(
+          {
+            metadata: metadataPDA,
+            updateAuthority: publicKey,
+          },
+          {
+            updateMetadataAccountArgsV2: {
+              data: tokenMetadata,
+              updateAuthority: publicKey,
+              primarySaleHappened: true,
+              isMutable: true,
+            },
+          }
+        ),
+        createUpdateRewardInstruction(
           {
             rewardData: rewardDataPda,
-            rewardMint: rewardMintPda,
             user: publicKey,
-            metadata: metadataPDA,
-            tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
           },
           {
             rewardBasisPoints: +form.reward * 100,
-            uri: form.metadata.toString(),
-            name: form.tokenName.toString(),
-            symbol: form.symbol.toString(),
           }
         )
       );
       const transactionSignature = await sendTransaction(
-        createNewTokenTransaction,
+        updateMetadataTransaction,
         connection
-        // {
-        //   signers: [mintKeypair],
-        // }
       );
 
       // await connection.confirmTransaction(transactionSignature, "confirmed");
@@ -462,7 +477,7 @@ export const CreateNft: FC = ({}) => {
                 className="px-8 m-2 btn animate-pulse bg-gradient-to-r from-[#9945FF] to-[#14F195] hover:from-pink-500 hover:to-yellow-500 ..."
                 onClick={async () => uploadImage()}
               >
-                <span>Create Token</span>
+                <span>Update Metadata</span>
               </button>
             </div>
           </div>
