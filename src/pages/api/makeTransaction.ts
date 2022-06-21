@@ -10,6 +10,7 @@ import {
   createAssociatedTokenAccountInstruction,
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
+  createBurnInstruction,
 } from "@solana/spl-token";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import {
@@ -220,7 +221,7 @@ async function post(
       }
     }
 
-    if (buyerNft && buyerNft.amount < BigInt(1)) {
+    if (buyerNft && buyerNft.amount < BigInt(5)) {
       transaction.add(transferInstructionNft);
     }
 
