@@ -23,8 +23,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { usdcAddress } from "../../lib/addresses";
 
 import idl from "./token_rewards.json";
+import idlNft from "./token_rewards_nft.json";
 
 import { createRedeemInstruction } from "../../../programs/rewards/generated/instructions/redeem";
+import { createMintNftInstruction } from "../../../programs/nft/generated/instructions/mintNft";
 
 import BigNumber from "bignumber.js";
 
@@ -58,18 +60,6 @@ async function post(
   res: NextApiResponse<MakeTransactionOutputData | ErrorOutput>
 ) {
   try {
-    // placeholders
-    // const amount1 = new BigNumber(1);
-    // const amount2 = new BigNumber(1);
-
-    // We pass the selected items in the query, calculate the expected cost
-    // const amount = new BigNumber(100);
-    // if (amount.toNumber() === 0) {
-    //   console.log("Returning 400: amount = 0");
-    //   res.status(400).json({ error: "Can't checkout with charge of 0" });
-    //   return;
-    // }
-
     const { USDC } = req.query;
     const { Token } = req.query;
 
@@ -97,11 +87,6 @@ async function post(
       return;
     }
 
-    // // placeholder
-    // const publicKey = new PublicKey(
-    //   "HLGGvJVFn9CasLzQKfKJtoAUWM17u3sHyXDZE6Phwr13"
-    // );
-
     const publicKey = new PublicKey(wallet);
 
     const buyerPublicKey = new PublicKey(account);
@@ -114,6 +99,7 @@ async function post(
     const usdcMint = await getMint(connection, usdcAddress);
 
     const programId = new PublicKey(idl.metadata.address);
+    const programIdNft = new PublicKey(idlNft.metadata.address);
 
     const [rewardDataPda, rewardDataBump] = await PublicKey.findProgramAddress(
       [Buffer.from("DATA"), publicKey.toBuffer()],
@@ -125,6 +111,18 @@ async function post(
       programId
     );
 
+    const [rewardDataPdaNft, rewardDataBumpNft] =
+      await PublicKey.findProgramAddress(
+        [Buffer.from("DATA"), publicKey.toBuffer()],
+        programIdNft
+      );
+
+    const [rewardMintPdaNft, rewardMintBumpNft] =
+      await PublicKey.findProgramAddress(
+        [Buffer.from("MINT"), rewardDataPdaNft.toBuffer()],
+        programIdNft
+      );
+
     // Get a recent blockhash to include in the transaction
     const { blockhash } = await connection.getLatestBlockhash("finalized");
 
@@ -135,6 +133,11 @@ async function post(
 
     const customerRewardToken = await getAssociatedTokenAddress(
       rewardMintPda,
+      buyerPublicKey
+    );
+
+    const customerRewardNft = await getAssociatedTokenAddress(
+      rewardMintPdaNft,
       buyerPublicKey
     );
 
@@ -157,6 +160,23 @@ async function post(
       ASSOCIATED_TOKEN_PROGRAM_ID
     );
 
+    const createAccountInstructionNft = createAssociatedTokenAccountInstruction(
+      buyerPublicKey,
+      customerRewardNft,
+      buyerPublicKey,
+      rewardMintPdaNft,
+      TOKEN_PROGRAM_ID,
+      ASSOCIATED_TOKEN_PROGRAM_ID
+    );
+
+    const transferInstructionNft = createMintNftInstruction({
+      rewardData: rewardDataPdaNft,
+      rewardMint: rewardMintPdaNft,
+      customerNft: customerRewardNft,
+      user: publicKey,
+      customer: buyerPublicKey,
+    });
+
     let buyer: Account;
     try {
       buyer = await getAccount(
@@ -178,6 +198,35 @@ async function post(
       }
     }
 
+    let buyerNft: Account;
+    try {
+      buyerNft = await getAccount(
+        connection,
+        customerRewardNft,
+        "confirmed",
+        TOKEN_PROGRAM_ID
+      );
+    } catch (error: unknown) {
+      if (
+        error instanceof TokenAccountNotFoundError ||
+        error instanceof TokenInvalidAccountOwnerError
+      ) {
+        try {
+          transaction.add(createAccountInstructionNft);
+          transaction.add(transferInstructionNft);
+        } catch (error: unknown) {}
+      } else {
+        throw error;
+      }
+    }
+
+    if (buyerNft && buyerNft.amount < BigInt(1)) {
+      transaction.add(transferInstructionNft);
+    }
+
+    //test
+    let amount = +USDC;
+
     const transferInstruction = createRedeemInstruction(
       {
         rewardData: rewardDataPda,
@@ -190,7 +239,7 @@ async function post(
         customer: buyerPublicKey,
       },
       {
-        usdcToken: +USDC * 10 ** usdcMint.decimals,
+        usdcToken: +amount * 10 ** usdcMint.decimals,
         rewardToken: +Token * 10 ** usdcMint.decimals,
       }
     );

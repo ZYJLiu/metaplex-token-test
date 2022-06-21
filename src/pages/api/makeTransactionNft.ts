@@ -97,11 +97,6 @@ async function post(
       return;
     }
 
-    // // placeholder
-    // const publicKey = new PublicKey(
-    //   "HLGGvJVFn9CasLzQKfKJtoAUWM17u3sHyXDZE6Phwr13"
-    // );
-
     const publicKey = new PublicKey(wallet);
 
     const buyerPublicKey = new PublicKey(account);
@@ -136,16 +131,6 @@ async function post(
     const customerNft = await getAssociatedTokenAddress(
       rewardMintPda,
       buyerPublicKey
-    );
-
-    const customerUsdcToken = await getAssociatedTokenAddress(
-      usdcAddress,
-      buyerPublicKey
-    );
-
-    const userUsdcToken = await getAssociatedTokenAddress(
-      usdcAddress,
-      publicKey
     );
 
     const createAccountInstruction = createAssociatedTokenAccountInstruction(
