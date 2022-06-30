@@ -2,11 +2,7 @@ import { FC, useState, Fragment, useEffect, useRef, useCallback } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 import { WebBundlr } from "@bundlr-network/client";
-import {
-  LAMPORTS_PER_SOL,
-  Transaction,
-  PublicKey,
-} from "@solana/web3.js";
+import { LAMPORTS_PER_SOL, Transaction, PublicKey } from "@solana/web3.js";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 
 import { notify } from "../utils/notifications";
@@ -44,7 +40,8 @@ export const CreateNft: FC = ({}) => {
   const [tokenName, setTokenName] = useState("");
   const [symbol, setSymbol] = useState("");
   const [number, setNumber] = useState("");
-  const [decimals, setDecimals] = useState("");
+  const [description, setDescription] = useState("");
+  const [expiration, setExpiration] = useState("");
   const [reward, setReward] = useState("");
   const [transaction, setTransaction] = useState("");
 
@@ -85,7 +82,7 @@ export const CreateNft: FC = ({}) => {
   useEffect(() => {
     if (urlMounted.current && metadataUrl != null) {
       onClick({
-        decimals: Number(decimals),
+        decimals: Number(0),
         amount: Number(number),
         metadata: metadataUrl,
         symbol: symbol,
@@ -185,10 +182,16 @@ export const CreateNft: FC = ({}) => {
 
   const uploadMetadata = async () => {
     const data = {
-      name: null,
-      symbol: null,
-      description: null,
+      name: tokenName,
+      symbol: symbol,
+      description: description,
       image: imageUrl,
+      attributes: [
+        {
+          trait_type: "Expiration",
+          value: expiration,
+        },
+      ],
     };
 
     // const jsonString = JSON.stringify(data);
@@ -220,6 +223,7 @@ export const CreateNft: FC = ({}) => {
     const arweaveMetadataUrl = `https://arweave.net/${metadataResult.data.id}`;
 
     setMetadataUrl(arweaveMetadataUrl);
+    console.log(arweaveMetadataUrl);
   };
 
   const onClick = useCallback(
@@ -439,18 +443,18 @@ export const CreateNft: FC = ({}) => {
                 placeholder="Symbol"
                 onChange={(e) => setSymbol(e.target.value)}
               />
-              {/* <input
-                type="number"
+              <input
+                type="text"
                 className="form-control block mb-2 w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                placeholder="Amount"
-                onChange={(e) => setNumber(e.target.value)}
-              /> */}
-              {/* <input
-                type="number"
+                placeholder="Description"
+                onChange={(e) => setDescription(e.target.value)}
+              />
+              <input
+                type="date"
                 className="form-control block mb-2 w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                placeholder="Decimals"
-                onChange={(e) => setDecimals(e.target.value)}
-              /> */}
+                placeholder="Expiration"
+                onChange={(e) => setExpiration(e.target.value)}
+              />
               <input
                 type="number"
                 className="form-control block mb-2 w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
